@@ -150,8 +150,7 @@
             string assetPathWithoutFilename = asset.Remove(lastSlash + 1, asset.Length - (lastSlash + 1));
             PsdName = asset.Replace(assetPathWithoutFilename, string.Empty).Replace(".psd", string.Empty);
 
-            currentPath = GetFullProjectPath() + "Assets";
-            currentPath = Path.Combine(currentPath, PsdName);
+            currentPath = GetFullProjectPath() + assetPathWithoutFilename + PsdName;
             Directory.CreateDirectory(currentPath);
 
             if (LayoutInScene || CreatePrefab)
@@ -692,7 +691,7 @@
 
             spriteRenderer.sprite = frames[0];
 
-#if UNITY_5
+#if UNITY_2018 || UNITY_5
             // Create Animator Controller with an Animation Clip
             UnityEditor.Animations.AnimatorController controller = new UnityEditor.Animations.AnimatorController();
             controller.AddLayer("Base Layer");
@@ -704,10 +703,10 @@
             AssetDatabase.CreateAsset(controller, GetRelativePath(currentPath) + "/" + layer.Name + ".controller");
 #else // Unity 4
             // Create Animator Controller with an Animation Clip
-            AnimatorController controller = new AnimatorController();
-            AnimatorControllerLayer controllerLayer = controller.AddLayer("Base Layer");
+            UnityEditor.Animations.AnimatorController controller = new UnityEditor.Animations.AnimatorController();
+            UnityEditor.Animations.AnimatorControllerLayer controllerLayer = controller.AddLayer("Base Layer");
 
-            State state = controllerLayer.stateMachine.AddState(layer.Name);
+            UnityEditor.Animations.AnimatorState state = controllerLayer.stateMachine.AddState(layer.Name);
             state.SetAnimationClip(CreateSpriteAnimationClip(layer.Name, frames, fps));
 
             AssetDatabase.CreateAsset(controller, GetRelativePath(currentPath) + "/" + layer.Name + ".controller");
@@ -755,13 +754,14 @@
                 keyFrames[i] = kf;
             }
 
-#if UNITY_5
+#if UNITY_2018
             AnimationUtility.SetObjectReferenceCurve(clip, curveBinding, keyFrames);
+            clip.hasMotionCurves.Equals(true);
 #else // Unity 4
             AnimationUtility.SetAnimationType(clip, ModelImporterAnimationType.Generic);
             AnimationUtility.SetObjectReferenceCurve(clip, curveBinding, keyFrames);
 
-            clip.ValidateIfRetargetable(true);
+            clip.hasMotionCurves.Equals(true);
 #endif
 
             AssetDatabase.CreateAsset(clip, GetRelativePath(currentPath) + "/" + name + ".anim");
