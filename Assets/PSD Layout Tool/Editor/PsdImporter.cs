@@ -1,18 +1,18 @@
-﻿namespace PsdLayoutTool
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using PhotoshopFile;
-    using UnityEditor;
-    using UnityEditorInternal;
-    using UnityEngine;
-    using UnityEngine.EventSystems;
-    using UnityEngine.UI;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using PhotoshopFile;
+using UnityEditor;
+using UnityEditorInternal;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
+namespace PsdLayoutTool
+{
     /// <summary>
     /// Handles all of the importing for a PSD file (exporting textures, creating prefabs, etc).
     /// </summary>
@@ -165,6 +165,14 @@
                 else
                 {
                     rootPsdGameObject = new GameObject(PsdName);
+
+                    float x = 0 / PixelsToUnits;
+                    float y = 0 / PixelsToUnits;
+                    y = (CanvasSize.y / PixelsToUnits) - y;
+                    float width = psd.Width / PixelsToUnits;
+                    float height = psd.Height / PixelsToUnits;
+
+                    rootPsdGameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
                 }
 
                 currentGroupGameObject = rootPsdGameObject;
@@ -346,6 +354,7 @@
         /// <param name="layer">The layer to export.</param>
         private static void ExportLayer(Layer layer)
         {
+
             layer.Name = MakeNameSafe(layer.Name);
             if (layer.Children.Count > 0 || layer.Rect.width == 0)
             {
@@ -655,6 +664,27 @@
         }
 
         /// <summary>
+        /// Creates a <see cref="GameObject"/> with a sprite from the given <see cref="Layer"/>
+        /// </summary>
+        /// <param name="layer">The <see cref="Layer"/> to create the sprite from.</param>
+        private static GameObject CreateEmptyObject(Layer layer)
+        {
+            float x = 0 / PixelsToUnits;
+            float y = 0 / PixelsToUnits;
+            y = (CanvasSize.y / PixelsToUnits) - y;
+            float width = layer.PsdFile.Width / PixelsToUnits;
+            float height = layer.PsdFile.Height / PixelsToUnits;
+
+            GameObject gameObject = new GameObject(layer.Name);
+            gameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
+            gameObject.transform.parent = currentGroupGameObject.transform;
+
+            currentDepth -= depthStep;
+
+            return gameObject;
+        }
+
+        /// <summary>
         /// Creates a Unity sprite animation from the given <see cref="Layer"/> that is a group layer.  It grabs all of the children art
         /// layers and uses them as the frames of the animation.
         /// </summary>
@@ -692,7 +722,7 @@
 
             spriteRenderer.sprite = frames[0];
 
-#if UNITY_5
+#if UNITY_2018 || UNITY_2020 || UNITY_5
             // Create Animator Controller with an Animation Clip
             UnityEditor.Animations.AnimatorController controller = new UnityEditor.Animations.AnimatorController();
             controller.AddLayer("Base Layer");
@@ -755,7 +785,11 @@
                 keyFrames[i] = kf;
             }
 
+<<<<<<< HEAD
 #if UNITY_5
+=======
+#if UNITY_2018 || UNITY_2020
+>>>>>>> 6c49972 (Update to work in 2020)
             AnimationUtility.SetObjectReferenceCurve(clip, curveBinding, keyFrames);
 #else // Unity 4
             AnimationUtility.SetAnimationType(clip, ModelImporterAnimationType.Generic);
