@@ -1,10 +1,10 @@
-﻿namespace PhotoshopFile
-{
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using System.IO;
-    using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
+using UnityEngine;
 
+namespace PhotoshopFile
+{
     /// <summary>
     /// Contains the data representation of a PSD layer
     /// </summary>

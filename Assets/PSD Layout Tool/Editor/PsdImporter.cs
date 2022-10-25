@@ -1,18 +1,18 @@
-﻿namespace PsdLayoutTool
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using PhotoshopFile;
-    using UnityEditor;
-    using UnityEditorInternal;
-    using UnityEngine;
-    using UnityEngine.EventSystems;
-    using UnityEngine.UI;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using PhotoshopFile;
+using UnityEditor;
+using UnityEditorInternal;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
+namespace PsdLayoutTool
+{
     /// <summary>
     /// Handles all of the importing for a PSD file (exporting textures, creating prefabs, etc).
     /// </summary>
@@ -172,6 +172,7 @@
                     float height = psd.Height / PixelsToUnits;
 
                     rootPsdGameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
+
                 }
 
                 currentGroupGameObject = rootPsdGameObject;
@@ -353,6 +354,7 @@
         /// <param name="layer">The layer to export.</param>
         private static void ExportLayer(Layer layer)
         {
+
             layer.Name = MakeNameSafe(layer.Name);
             if (layer.Children.Count > 0 || layer.Rect.width == 0)
             {
@@ -662,9 +664,9 @@
         }
 
         /// <summary>
-        /// Creates a <see cref="GameObject"/> from the given <see cref="Layer"/>
+        /// Creates a <see cref="GameObject"/> with a sprite from the given <see cref="Layer"/>
         /// </summary>
-        /// <param name="layer">The <see cref="Layer"/> to create the gameobject from.</param>
+        /// <param name="layer">The <see cref="Layer"/> to create the sprite from.</param>
         private static GameObject CreateEmptyObject(Layer layer)
         {
             float x = 0 / PixelsToUnits;
@@ -720,7 +722,7 @@
 
             spriteRenderer.sprite = frames[0];
 
-#if UNITY_2018 || UNITY_5
+#if UNITY_2018 || UNITY_2020 || UNITY_5
             // Create Animator Controller with an Animation Clip
             UnityEditor.Animations.AnimatorController controller = new UnityEditor.Animations.AnimatorController();
             controller.AddLayer("Base Layer");
@@ -783,7 +785,7 @@
                 keyFrames[i] = kf;
             }
 
-#if UNITY_2018
+#if UNITY_2018 || UNITY_2020
             AnimationUtility.SetObjectReferenceCurve(clip, curveBinding, keyFrames);
             clip.hasMotionCurves.Equals(true);
 #else // Unity 4
