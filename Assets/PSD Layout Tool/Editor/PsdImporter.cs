@@ -164,6 +164,7 @@ namespace PsdLayoutTool
                 else
                 {
                     rootPsdGameObject = new GameObject(PsdName);
+                    rootPsdGameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
 
                     float x = 0 / PixelsToUnits;
                     float y = 0 / PixelsToUnits;
