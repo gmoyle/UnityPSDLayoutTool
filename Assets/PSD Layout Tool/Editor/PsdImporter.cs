@@ -164,6 +164,14 @@
                 else
                 {
                     rootPsdGameObject = new GameObject(PsdName);
+
+                    float x = 0 / PixelsToUnits;
+                    float y = 0 / PixelsToUnits;
+                    y = (CanvasSize.y / PixelsToUnits) - y;
+                    float width = psd.Width / PixelsToUnits;
+                    float height = psd.Height / PixelsToUnits;
+
+                    rootPsdGameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
                 }
 
                 currentGroupGameObject = rootPsdGameObject;
@@ -408,7 +416,7 @@
 
                 if (LayoutInScene || CreatePrefab)
                 {
-                    currentGroupGameObject = new GameObject(layer.Name);
+                    currentGroupGameObject = CreateEmptyObject(layer);
                     currentGroupGameObject.transform.parent = oldGroupObject.transform;
                 }
 
@@ -651,6 +659,27 @@
             SpriteRenderer spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
             spriteRenderer.sprite = CreateSprite(layer);
             return spriteRenderer;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="GameObject"/> from the given <see cref="Layer"/>
+        /// </summary>
+        /// <param name="layer">The <see cref="Layer"/> to create the gameobject from.</param>
+        private static GameObject CreateEmptyObject(Layer layer)
+        {
+            float x = 0 / PixelsToUnits;
+            float y = 0 / PixelsToUnits;
+            y = (CanvasSize.y / PixelsToUnits) - y;
+            float width = layer.PsdFile.Width / PixelsToUnits;
+            float height = layer.PsdFile.Height / PixelsToUnits;
+
+            GameObject gameObject = new GameObject(layer.Name);
+            gameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
+            gameObject.transform.parent = currentGroupGameObject.transform;
+
+            currentDepth -= depthStep;
+
+            return gameObject;
         }
 
         /// <summary>
