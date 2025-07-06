@@ -1,4 +1,4 @@
-name: Basic CI - No Unity License Required
+name: Basic CI - Clean
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   basic-validation:
-    name: Basic Code Validation
+    name: Basic Package Validation
     runs-on: ubuntu-latest
     
     steps:
@@ -17,16 +17,16 @@ jobs:
       
     - name: Validate package.json
       run: |
-        echo "🔍 Validating package.json..."
+        echo "=== Validating package.json ==="
         
         if [ -f "Assets/PSD Layout Tool/package.json" ]; then
-          echo "✅ package.json exists"
+          echo "PASS: package.json exists"
           
           # Validate JSON syntax
           if python3 -m json.tool "Assets/PSD Layout Tool/package.json" > /dev/null 2>&1; then
-            echo "✅ package.json is valid JSON"
+            echo "PASS: package.json is valid JSON"
           else
-            echo "❌ package.json has invalid JSON syntax"
+            echo "FAIL: package.json has invalid JSON syntax"
             exit 1
           fi
           
@@ -34,35 +34,40 @@ jobs:
           required_fields=("name" "version" "displayName" "description")
           for field in "${required_fields[@]}"; do
             if grep -q "\"$field\"" "Assets/PSD Layout Tool/package.json"; then
-              echo "✅ Required field '$field' found"
+              echo "PASS: Required field '$field' found"
             else
-              echo "❌ Missing required field: $field"
+              echo "FAIL: Missing required field: $field"
               exit 1
             fi
           done
           
           # Extract and display key info
           echo ""
-          echo "📋 Package Information:"
-          echo "Name: $(grep '"name"' "Assets/PSD Layout Tool/package.json" | sed 's/.*"name": *"\([^"]*\)".*/\1/')"
-          echo "Version: $(grep '"version"' "Assets/PSD Layout Tool/package.json" | sed 's/.*"version": *"\([^"]*\)".*/\1/')"
-          echo "Display Name: $(grep '"displayName"' "Assets/PSD Layout Tool/package.json" | sed 's/.*"displayName": *"\([^"]*\)".*/\1/')"
-          echo "Unity Version: $(grep '"unity"' "Assets/PSD Layout Tool/package.json" | sed 's/.*"unity": *"\([^"]*\)".*/\1/')"
+          echo "=== Package Information ==="
+          name=$(grep '"name"' "Assets/PSD Layout Tool/package.json" | sed 's/.*"name": *"\([^"]*\)".*/\1/')
+          version=$(grep '"version"' "Assets/PSD Layout Tool/package.json" | sed 's/.*"version": *"\([^"]*\)".*/\1/')
+          displayName=$(grep '"displayName"' "Assets/PSD Layout Tool/package.json" | sed 's/.*"displayName": *"\([^"]*\)".*/\1/')
+          unity=$(grep '"unity"' "Assets/PSD Layout Tool/package.json" | sed 's/.*"unity": *"\([^"]*\)".*/\1/')
+          
+          echo "Name: $name"
+          echo "Version: $version"
+          echo "Display Name: $displayName"
+          echo "Unity Version: $unity"
           
         else
-          echo "❌ package.json not found at expected location"
+          echo "FAIL: package.json not found at expected location"
           exit 1
         fi
         
     - name: Check file structure
       run: |
-        echo "🔍 Checking Unity package structure..."
+        echo "=== Checking Unity package structure ==="
         
         # Check for required directories
         if [ -d "Assets/PSD Layout Tool/Editor" ]; then
-          echo "✅ Editor folder exists"
+          echo "PASS: Editor folder exists"
         else
-          echo "❌ Editor folder missing"
+          echo "FAIL: Editor folder missing"
           exit 1
         fi
         
@@ -75,9 +80,9 @@ jobs:
         
         for file in "${core_files[@]}"; do
           if [ -f "$file" ]; then
-            echo "✅ Core file exists: $(basename "$file")"
+            echo "PASS: Core file exists: $(basename "$file")"
           else
-            echo "❌ Missing core file: $file"
+            echo "FAIL: Missing core file: $file"
             exit 1
           fi
         done
@@ -87,13 +92,13 @@ jobs:
         total_files=$(find "Assets/PSD Layout Tool" -type f | wc -l)
         
         echo ""
-        echo "📊 File Statistics:"
+        echo "=== File Statistics ==="
         echo "C# files: $cs_files"
         echo "Total files: $total_files"
         
-    - name: Basic C# syntax validation
+    - name: Basic syntax validation
       run: |
-        echo "🔍 Checking C# syntax and structure..."
+        echo "=== Checking C# syntax and structure ==="
         
         # Check for basic C# syntax issues
         cs_files=$(find "Assets/PSD Layout Tool" -name "*.cs")
@@ -103,107 +108,113 @@ jobs:
           
           # Check for using statements
           if grep -q "^using " "$file"; then
-            echo "  ✅ Has using statements"
+            echo "  PASS: Has using statements"
           else
-            echo "  ⚠️  No using statements found"
+            echo "  WARN: No using statements found"
           fi
           
           # Check for namespace
           if grep -q "^namespace " "$file" || grep -q "^[[:space:]]*namespace " "$file"; then
-            echo "  ✅ Has namespace declaration"
+            echo "  PASS: Has namespace declaration"
           else
-            echo "  ⚠️  No namespace declaration"
+            echo "  WARN: No namespace declaration"
           fi
           
           # Check for class definitions
           if grep -q "class " "$file"; then
-            echo "  ✅ Contains class definitions"
+            echo "  PASS: Contains class definitions"
           else
-            echo "  ⚠️  No class definitions found"
+            echo "  WARN: No class definitions found"
           fi
           
           echo ""
         done
         
-    - name: Check Unity version compatibility
+    - name: Check Unity compatibility
       run: |
-        echo "🔍 Checking Unity version compatibility indicators..."
+        echo "=== Checking Unity version compatibility ==="
         
         # Look for version-specific preprocessor directives
-        if grep -r "UNITY_2018" "Assets/PSD Layout Tool" --include="*.cs"; then
-          echo "✅ Found Unity 2018 compatibility code"
+        if grep -r "UNITY_2018" "Assets/PSD Layout Tool" --include="*.cs" > /dev/null 2>&1; then
+          echo "PASS: Found Unity 2018 compatibility code"
         fi
         
-        if grep -r "UNITY_2020" "Assets/PSD Layout Tool" --include="*.cs"; then
-          echo "✅ Found Unity 2020 compatibility code"
+        if grep -r "UNITY_2020" "Assets/PSD Layout Tool" --include="*.cs" > /dev/null 2>&1; then
+          echo "PASS: Found Unity 2020 compatibility code"
         fi
         
-        if grep -r "UNITY_2018_1_OR_NEWER" "Assets/PSD Layout Tool" --include="*.cs"; then
-          echo "✅ Found modern Unity version detection"
+        if grep -r "UNITY_2018_1_OR_NEWER" "Assets/PSD Layout Tool" --include="*.cs" > /dev/null 2>&1; then
+          echo "PASS: Found modern Unity version detection"
         fi
         
         # Check for deprecated API usage
         deprecated_apis=("CreateEmptyPrefab" "ReplacePrefab")
         for api in "${deprecated_apis[@]}"; do
-          if grep -r "$api" "Assets/PSD Layout Tool" --include="*.cs"; then
-            echo "⚠️  Found potentially deprecated API: $api"
+          if grep -r "$api" "Assets/PSD Layout Tool" --include="*.cs" > /dev/null 2>&1; then
+            echo "WARN: Found potentially deprecated API: $api"
           fi
         done
         
     - name: Generate validation report
       run: |
-        echo "📋 Generating validation report..."
+        echo "=== Generating validation report ==="
         
-        cat > validation-report.md << EOF
-        # Package Validation Report
+        cat > validation-report.md << 'EOF'
+# Package Validation Report
+
+**Date:** $(date)
+**Commit:** ${{ github.sha }}
+**Branch:** ${{ github.ref_name }}
+
+## Validation Results
+
+### Package Structure
+- Package.json: Valid
+- Core files: Present
+- Directory structure: Correct
+
+### File Inventory
+- C# files: $(find "Assets/PSD Layout Tool" -name "*.cs" | wc -l)
+- JSON files: $(find "Assets/PSD Layout Tool" -name "*.json" | wc -l)
+- Total files: $(find "Assets/PSD Layout Tool" -type f | wc -l)
+
+### Code Quality
+- Syntax: Valid C# structure detected
+- Namespaces: Properly declared
+- Unity compatibility: Multi-version support found
+
+## File List
+```
+$(find "Assets/PSD Layout Tool" -type f | sort)
+```
+
+## Package Information
+```json
+$(cat "Assets/PSD Layout Tool/package.json")
+```
+EOF
         
-        **Date:** $(date)
-        **Commit:** ${{ github.sha }}
-        **Branch:** ${{ github.ref_name }}
-        
-        ## ✅ Validation Results
-        
-        ### Package Structure
-        - Package.json: Valid
-        - Core files: Present
-        - Directory structure: Correct
-        
-        ### File Inventory
-        - C# files: $(find "Assets/PSD Layout Tool" -name "*.cs" | wc -l)
-        - JSON files: $(find "Assets/PSD Layout Tool" -name "*.json" | wc -l)
-        - Total files: $(find "Assets/PSD Layout Tool" -type f | wc -l)
-        
-        ### Code Quality
-        - Syntax: Valid C# structure detected
-        - Namespaces: Properly declared
-        - Unity compatibility: Multi-version support found
-        
-        ## 📁 File List
-        \`\`\`
-        $(find "Assets/PSD Layout Tool" -type f | sort)
-        \`\`\`
-        
-        ## Package Information
-        \`\`\`json
-        $(cat "Assets/PSD Layout Tool/package.json")
-        \`\`\`
-        EOF
+        # Process the report to substitute variables
+        eval "echo \"$(cat validation-report.md)\"" > validation-report-final.md
         
     - name: Upload validation report
       uses: actions/upload-artifact@v3
       with:
         name: validation-report-${{ github.sha }}
-        path: validation-report.md
+        path: validation-report-final.md
         retention-days: 30
         
     - name: Validation summary
       run: |
-        echo "🎉 Basic validation completed successfully!"
+        echo "=== VALIDATION COMPLETE ==="
         echo ""
-        echo "✅ Package structure is valid"
-        echo "✅ Required files are present"
-        echo "✅ JSON syntax is correct"
-        echo "✅ C# files have proper structure"
+        echo "RESULT: Package structure is valid"
+        echo "RESULT: Required files are present"
+        echo "RESULT: JSON syntax is correct"
+        echo "RESULT: C# files have proper structure"
         echo ""
-        echo "📊 Package contains $(find "Assets/PSD Layout Tool" -name "*.cs" | wc -l) C# files"
-        echo "🏷️  Version: $(grep '"version"' "Assets/PSD Layout Tool/package.json" | sed 's/.*"version": *"\([^"]*\)".*/\1/')"
+        echo "Package contains $(find "Assets/PSD Layout Tool" -name "*.cs" | wc -l) C# files"
+        version=$(grep '"version"' "Assets/PSD Layout Tool/package.json" | sed 's/.*"version": *"\([^"]*\)".*/\1/')
+        echo "Version: $version"
+        echo ""
+        echo "SUCCESS: All basic validations passed!"
