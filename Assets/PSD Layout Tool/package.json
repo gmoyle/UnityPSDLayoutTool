@@ -1,0 +1,19 @@
+{
+  "name": "com.igt.psdsimplelayout",
+  "displayName": "PSD Simple Layout",
+  "version": "1.0.2",
+  "unity": "2020.4",
+  "description": "A very lightweight photoshop Unity import tool that allows for rapid breakout/prototyping/scene building with limited overhead.",
+  "keywords": [
+    "PSD",
+    "PSD Layout",
+    "Text"
+  ],
+  "category": "Image Import",
+  "repository": {
+    "type": "",
+    "url": "",
+    "revision": ""
+  },
+  "type": "tool"
+}
