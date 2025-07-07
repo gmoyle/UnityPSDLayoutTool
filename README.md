@@ -1,6 +1,6 @@
 # Unity PSD Layout Tool
 
-[![CI - Basic Validation](https://github.com/gmoyle/UnityPSDLayoutTool/actions/workflows/basic-ci.yml/badge.svg)](https://github.com/gmoyle/UnityPSDLayoutTool/actions/workflows/basic-ci.yml)
+[![Basic CI - No Unity License Required](https://github.com/gmoyle/UnityPSDLayoutTool/actions/workflows/basic-ci.yml/badge.svg)](https://github.com/gmoyle/UnityPSDLayoutTool/actions/workflows/basic-ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 [![Unity 2018.1+](https://img.shields.io/badge/Unity-2018.1%2B-blue.svg)](https://unity3d.com)
 

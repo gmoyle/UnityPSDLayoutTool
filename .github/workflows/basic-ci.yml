@@ -1,4 +1,4 @@
-name: Basic CI - Clean
+name: Basic CI - No Unity License Required
 
 on:
   push:
