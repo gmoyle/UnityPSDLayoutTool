@@ -198,7 +198,7 @@ EOF
         eval "echo \"$(cat validation-report.md)\"" > validation-report-final.md
         
     - name: Upload validation report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: validation-report-${{ github.sha }}
         path: validation-report-final.md
