@@ -151,7 +151,7 @@ jobs:
         echo "- Total files: $(find 'Assets/PSD Layout Tool' -type f | wc -l)" >> package-report.md
         
     - name: Upload package report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: package-validation-report
         path: package-report.md
