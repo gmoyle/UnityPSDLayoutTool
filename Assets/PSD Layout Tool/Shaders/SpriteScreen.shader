@@ -31,14 +31,14 @@ Shader "Sprites/Screen"
         {
         CGPROGRAM
             #pragma vertex SpriteVert
-            #pragma fragment SpriteFrag
+            #pragma fragment SpriteScreenFrag
             #pragma target 2.0
             #pragma multi_compile_instancing
             #pragma multi_compile _ PIXELSNAP_ON
             #pragma multi_compile _ ETC1_EXTERNAL_ALPHA
             #include "UnitySprites.cginc"
 
-            fixed4 SpriteFrag(v2f IN) : SV_Target
+            fixed4 SpriteScreenFrag(v2f IN) : SV_Target
             {
                 fixed4 c = SampleSpriteTexture (IN.texcoord) * IN.color;
                 c.rgb *= c.a;
