@@ -10,6 +10,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 using PsdLayoutTool;
 
 namespace PsdLayoutTool
@@ -200,16 +201,6 @@ namespace PsdLayoutTool
                     float height = psd.Height / PixelsToUnits;
 
                     rootPsdGameObject = new GameObject(PsdName);
-<<<<<<< HEAD
-
-                    float x = 0 / PixelsToUnits;
-                    float y = 0 / PixelsToUnits;
-                    y = (CanvasSize.y / PixelsToUnits) - y;
-                    float width = psd.Width / PixelsToUnits;
-                    float height = psd.Height / PixelsToUnits;
-
-=======
->>>>>>> 82ff974d9d9cd0c494ac35c7f386e2d4903f9461
                     rootPsdGameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
                 }
 
@@ -648,7 +639,7 @@ namespace PsdLayoutTool
         /// Creates a <see cref="GameObject"/> with a <see cref="TextMesh"/> from the given <see cref="Layer"/>.
         /// </summary>
         /// <param name="layer">The <see cref="Layer"/> to create a <see cref="TextMesh"/> from.</param>
-        private static void CreateTextGameObject(Layer layer)
+private static void CreateTextGameObject(Layer layer)
         {
             Color color = layer.FillColor;
 
@@ -664,29 +655,22 @@ namespace PsdLayoutTool
 
             currentDepth -= depthStep;
 
-            Font font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-
-            MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
-            meshRenderer.material = font.material;
-
-            TextMesh textMesh = gameObject.AddComponent<TextMesh>();
-            textMesh.text = layer.Text;
-            textMesh.font = font;
-            textMesh.fontSize = 0;
-            textMesh.characterSize = layer.FontSize / PixelsToUnits;
-            textMesh.color = color;
-            textMesh.anchor = TextAnchor.MiddleCenter;
+            TextMeshPro textMeshPro = gameObject.AddComponent<TextMeshPro>();
+            textMeshPro.text = layer.Text;
+            textMeshPro.fontSize = layer.FontSize;
+            textMeshPro.color = color;
+            textMeshPro.autoSizeTextContainer = true;
 
             switch (layer.Justification)
             {
                 case TextJustification.Left:
-                    textMesh.alignment = TextAlignment.Left;
+                    textMeshPro.alignment = TextAlignmentOptions.Left;
                     break;
                 case TextJustification.Right:
-                    textMesh.alignment = TextAlignment.Right;
+                    textMeshPro.alignment = TextAlignmentOptions.Right;
                     break;
                 case TextJustification.Center:
-                    textMesh.alignment = TextAlignment.Center;
+                    textMeshPro.alignment = TextAlignmentOptions.Center;
                     break;
             }
         }
@@ -1164,7 +1148,7 @@ namespace PsdLayoutTool
         /// Creates a Unity UI <see cref="UnityEngine.UI.Text"/> <see cref="GameObject"/> with the text from a PSD <see cref="Layer"/>.
         /// </summary>
         /// <param name="layer">The <see cref="Layer"/> used to create the <see cref="UnityEngine.UI.Text"/> from.</param>
-        private static void CreateUIText(Layer layer)
+private static void CreateUIText(Layer layer)
         {
             Color color = layer.FillColor;
 
@@ -1187,41 +1171,24 @@ namespace PsdLayoutTool
 
             currentDepth -= depthStep;
 
-            Font font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            TextMeshProUGUI textMeshPro = gameObject.AddComponent<TextMeshProUGUI>();
+            textMeshPro.text = layer.Text;
+            textMeshPro.fontSize = layer.FontSize;
+            textMeshPro.rectTransform.sizeDelta = new Vector2(width, height);
 
-            Text textUI = gameObject.AddComponent<Text>();
-            textUI.text = layer.Text;
-            textUI.font = font;
-            textUI.rectTransform.sizeDelta = new Vector2(width, height);
-
-            float fontSize = layer.FontSize / PixelsToUnits;
-            float ceiling = Mathf.Ceil(fontSize);
-            if (fontSize < ceiling)
-            {
-                // Unity UI Text doesn't support floating point font sizes, so we have to round to the next size and scale everything else
-                float scaleFactor = ceiling / fontSize;
-                textUI.fontSize = (int)ceiling;
-                textUI.rectTransform.sizeDelta *= scaleFactor;
-                textUI.rectTransform.localScale /= scaleFactor;
-            }
-            else
-            {
-                textUI.fontSize = (int)fontSize;
-            }
-
-            textUI.color = color;
-            textUI.alignment = TextAnchor.MiddleCenter;
+            textMeshPro.color = color;
+            textMeshPro.alignment = TextAlignmentOptions.Center;
 
             switch (layer.Justification)
             {
                 case TextJustification.Left:
-                    textUI.alignment = TextAnchor.MiddleLeft;
+                    textMeshPro.alignment = TextAlignmentOptions.Left;
                     break;
                 case TextJustification.Right:
-                    textUI.alignment = TextAnchor.MiddleRight;
+                    textMeshPro.alignment = TextAlignmentOptions.Right;
                     break;
                 case TextJustification.Center:
-                    textUI.alignment = TextAnchor.MiddleCenter;
+                    textMeshPro.alignment = TextAlignmentOptions.Center;
                     break;
             }
         }
