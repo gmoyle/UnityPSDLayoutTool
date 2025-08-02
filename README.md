@@ -1,6 +1,6 @@
 # Unity PSD Layout Tool
 
-[![Basic CI - No Unity License Required](https://github.com/gmoyle/UnityPSDLayoutTool/actions/workflows/basic-ci.yml/badge.svg)](https://github.com/gmoyle/UnityPSDLayoutTool/actions/workflows/basic-ci.yml)
+[![CI - Quality & Compatibility](https://github.com/gmoyle/UnityPSDLayoutTool/actions/workflows/ci.yml/badge.svg)](https://github.com/gmoyle/UnityPSDLayoutTool/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 [![Unity 2018.1+](https://img.shields.io/badge/Unity-2018.1%2B-blue.svg)](https://unity3d.com)
 
@@ -214,8 +214,8 @@ Blend modes are automatically applied during import - no manual configuration re
 ### CI/CD Pipeline
 This repository uses GitHub Actions for continuous integration:
 
-- **Basic CI**: Runs on every push/PR - validates package structure and code syntax
-- **Full CI**: Unity compilation testing across multiple versions (requires Unity license)
+- **Quality & Compatibility CI**: Runs on every push/PR - validates package structure, code syntax, and Unity compatibility
+- **Unity Testing**: Available but disabled until Unity license secrets are configured (optional)
 - **Release Automation**: Creates packages and GitHub releases on version tags
 
 ### Running Locally
