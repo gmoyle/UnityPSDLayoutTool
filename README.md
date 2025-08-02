@@ -9,6 +9,7 @@ A lightweight Photoshop Unity import tool for rapid prototyping and scene buildi
 ## 🎯 Features
 
 * **Multi-Unity Support**: Works with Unity 2018.1+ (including 2019, 2020, 2021, 2022+)
+* **TextMeshPro Integration**: Automatically converts PSD text layers to TextMeshPro and TextMeshProUGUI components with font matching and import.
 * **Layout PSD layers as Unity Sprites** with proper positioning and pivot handling
   * Create Sprite animations using layer sets as animation frames
   * **Full Photoshop Blend Mode Support**: Automatically applies all 16 Photoshop blend modes to Unity materials with mathematically accurate shaders
@@ -86,6 +87,42 @@ Layers can have special tags applied to them that flags them to have the layout 
 |  &#124;Normal       |  Represents the default/enabled/normal/up state of a button  |
 |  &#124;Up           |  Represents the default/enabled/normal/up state of a button  |
 |  &#124;Text         |  Represents a **texture** that is the text of a button (normal text layers import without this tag)  |
+
+## TextMeshPro Integration
+
+The Unity PSD Layout Tool now provides **full TextMeshPro integration** for superior text rendering quality and performance:
+
+### Automatic Font Import
+- **System Font Detection**: Automatically scans Windows, macOS, and Linux system font directories
+- **Font Matching**: Matches PSD text layer fonts with system-installed TTF/OTF fonts by name
+- **Automatic Import**: Imports matched fonts into Unity's Assets folder if not already present
+- **TMP Asset Creation**: Automatically creates TextMeshPro font assets using Unity's TextMeshPro API
+- **Font Caching**: Caches font files and TMP assets for improved performance on subsequent imports
+
+### Text Component Creation
+- **3D Text**: Creates `TextMeshPro` components for sprite-based layouts
+- **UI Text**: Creates `TextMeshProUGUI` components for Unity UI layouts
+- **Property Preservation**: Maintains text content, font size, color, and alignment from PSD layers
+- **Fallback Support**: Uses default TMP fonts when system fonts cannot be found or imported
+
+### Supported Font Properties
+- **Font Family**: Matches font family names from PSD text layers
+- **Font Size**: Preserves original font size from Photoshop
+- **Text Color**: Maintains text fill color from PSD layers
+- **Text Alignment**: Supports Left, Center, and Right text justification
+- **Multi-line Text**: Handles multi-line text content properly
+
+### Font Management
+- **Preloading**: System fonts are preloaded during PSD import for faster processing
+- **Cache Management**: Built-in cache clearing and font reloading capabilities
+- **Error Handling**: Graceful fallback to default fonts when font import fails
+- **Cross-Platform**: Works consistently across Windows, macOS, and Linux development environments
+
+### Usage Notes
+- **Automatic Operation**: Font matching and import happens automatically during PSD import
+- **No Configuration**: No manual setup required - fonts are detected and imported transparently
+- **Performance**: First import may take longer due to font asset creation, subsequent imports are faster
+- **Font Requirements**: System fonts must be installed and accessible to be imported
 
 ## Photoshop Compatibility
 

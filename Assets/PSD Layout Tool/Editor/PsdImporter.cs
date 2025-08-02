@@ -167,7 +167,10 @@ namespace PsdLayoutTool
             PsdFile psd = new PsdFile(fullPath);
             CanvasSize = new Vector2(psd.Width, psd.Height);
 
-// Apply layer masks
+            // Pre-load system fonts for faster lookup during import
+            FontManager.PreloadSystemFonts();
+
+            // Apply layer masks
             ApplyLayerMasks(psd.Layers);
 
             // Apply adjustment layers
@@ -636,10 +639,10 @@ namespace PsdLayoutTool
         }
 
         /// <summary>
-        /// Creates a <see cref="GameObject"/> with a <see cref="TextMesh"/> from the given <see cref="Layer"/>.
+        /// Creates a <see cref="GameObject"/> with a <see cref="TextMeshPro"/> from the given <see cref="Layer"/>.
         /// </summary>
-        /// <param name="layer">The <see cref="Layer"/> to create a <see cref="TextMesh"/> from.</param>
-private static void CreateTextGameObject(Layer layer)
+        /// <param name="layer">The <see cref="Layer"/> to create a <see cref="TextMeshPro"/> from.</param>
+        private static void CreateTextGameObject(Layer layer)
         {
             Color color = layer.FillColor;
 
@@ -660,6 +663,13 @@ private static void CreateTextGameObject(Layer layer)
             textMeshPro.fontSize = layer.FontSize;
             textMeshPro.color = color;
             textMeshPro.autoSizeTextContainer = true;
+
+            // Apply the correct font from PSD
+            TMP_FontAsset fontAsset = FontManager.GetOrCreateTMPFont(layer.FontName, layer.FontSize);
+            if (fontAsset != null)
+            {
+                textMeshPro.font = fontAsset;
+            }
 
             switch (layer.Justification)
             {
@@ -1145,10 +1155,11 @@ private static void CreateTextGameObject(Layer layer)
         }
 
         /// <summary>
-        /// Creates a Unity UI <see cref="UnityEngine.UI.Text"/> <see cref="GameObject"/> with the text from a PSD <see cref="Layer"/>.
+        /// <summary>
+        /// Creates a Unity UI <see cref="TextMeshProUGUI"/> <see cref="GameObject"/> with the text from a PSD <see cref="Layer"/>.
         /// </summary>
-        /// <param name="layer">The <see cref="Layer"/> used to create the <see cref="UnityEngine.UI.Text"/> from.</param>
-private static void CreateUIText(Layer layer)
+        /// <param name="layer">The <see cref="Layer"/> used to create the <see cref="TextMeshProUGUI"/> from.</param>
+        private static void CreateUIText(Layer layer)
         {
             Color color = layer.FillColor;
 
@@ -1179,6 +1190,13 @@ private static void CreateUIText(Layer layer)
             textMeshPro.color = color;
             textMeshPro.alignment = TextAlignmentOptions.Center;
 
+            // Apply the correct font from PSD
+            TMP_FontAsset fontAsset = FontManager.GetOrCreateTMPFont(layer.FontName, layer.FontSize);
+            if (fontAsset != null)
+            {
+                textMeshPro.font = fontAsset;
+            }
+
             switch (layer.Justification)
             {
                 case TextJustification.Left:
@@ -1192,7 +1210,6 @@ private static void CreateUIText(Layer layer)
                     break;
             }
         }
-
         /// <summary>
         /// Creates a <see cref="UnityEngine.UI.Button"/> from the given <see cref="Layer"/>.
         /// </summary>
