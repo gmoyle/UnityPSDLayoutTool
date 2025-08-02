@@ -62,9 +62,7 @@ Shader "UI/Screen"
                 float4 vertex   : POSITION;
                 float4 color    : COLOR;
                 float2 texcoord : TEXCOORD0;
-                #if defined(UNITY_VERTEX_INPUT_INSTANCE_ID)
                 UNITY_VERTEX_INPUT_INSTANCE_ID
-                #endif
             };
 
             struct v2f
@@ -73,9 +71,7 @@ Shader "UI/Screen"
                 fixed4 color    : COLOR;
                 float2 texcoord  : TEXCOORD0;
                 float4 worldPosition : TEXCOORD1;
-                #if defined(UNITY_VERTEX_OUTPUT_INSTANCE_ID)
                 UNITY_VERTEX_OUTPUT_INSTANCE_ID
-                #endif
             };
 
             sampler2D _MainTex;
@@ -87,12 +83,8 @@ Shader "UI/Screen"
             v2f vert(appdata_t v)
             {
                 v2f OUT;
-                #if defined(UNITY_SETUP_INSTANCE_ID)
                 UNITY_SETUP_INSTANCE_ID(v);
-                #endif
-                #if defined(UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO)
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
-                #endif
                 OUT.worldPosition = v.vertex;
                 OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
 
