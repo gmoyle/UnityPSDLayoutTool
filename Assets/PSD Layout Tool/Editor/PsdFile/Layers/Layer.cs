@@ -191,6 +191,16 @@ namespace PhotoshopFile
         /// Gets or sets the layer effects/styles applied to this layer.
         /// </summary>
         public PsdLayoutTool.LayerEffects LayerEffects { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the adjustment layer effects applied to this layer.
+        /// </summary>
+        public PsdLayoutTool.AdjustmentLayerEffects AdjustmentEffects { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the smart filters applied to this layer.
+        /// </summary>
+        public PsdLayoutTool.SmartFilters SmartFilters { get; set; }
 
         /// <summary>
         /// Gets the rectangle containing the contents of the layer.

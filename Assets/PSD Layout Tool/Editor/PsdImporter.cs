@@ -10,6 +10,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using PsdLayoutTool;
 
 namespace PsdLayoutTool
 {
@@ -166,7 +167,14 @@ namespace PsdLayoutTool
             PsdFile psd = new PsdFile(fullPath);
             CanvasSize = new Vector2(psd.Width, psd.Height);
 
-            // Set the depth step based on the layer count.  If there are no layers, default to 0.1f.
+// Apply layer masks
+            ApplyLayerMasks(psd.Layers);
+
+            // Apply adjustment layers
+            ApplyAdjustmentLayers(psd.Layers);
+            
+            // Apply smart filters
+            ApplySmartFilters(psd.Layers);
             depthStep = psd.Layers.Count != 0 ? MaximumDepth / psd.Layers.Count : 0.1f;
 
             int lastSlash = asset.LastIndexOf('/');
@@ -827,11 +835,7 @@ namespace PsdLayoutTool
                 keyFrames[i] = kf;
             }
 
-<<<<<<< HEAD
-#if UNITY_5
-=======
-#if UNITY_2018 || UNITY_2020
->>>>>>> 6c49972 (Update to work in 2020)
+#if UNITY_2018 || UNITY_2020 || UNITY_5
             AnimationUtility.SetObjectReferenceCurve(clip, curveBinding, keyFrames);
 #else // Unity 4
             AnimationUtility.SetAnimationType(clip, ModelImporterAnimationType.Generic);
@@ -1273,6 +1277,334 @@ namespace PsdLayoutTool
                 }
             }
         }
+        #endregion
+        
+        #region Smart Filter Processing
+
+        /// <summary>
+        /// Processes smart filters for all layers in the PSD file.
+        /// This method pre-processes smart filters to apply effects.
+        /// </summary>
+        /// <param name="layers">The list of layers to process smart filters for.</param>
+        private static void ApplySmartFilters(List<Layer> layers)
+        {
+            if (layers == null) return;
+
+            foreach (Layer layer in layers)
+            {
+                ProcessSmartFilters(layer);
+
+                // Process child layers recursively
+                if (layer.Children != null && layer.Children.Count > 0)
+                {
+                    ApplySmartFilters(layer.Children);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies smart filter effects to the given layer.
+        /// </summary>
+        /// <param name="layer">The layer to process smart filters for.</param>
+        private static void ProcessSmartFilters(Layer layer)
+        {
+            SmartFilters filters = SmartFilterParser.ParseSmartFilters(layer);
+            layer.SmartFilters = filters;
+
+            foreach (var effect in filters.Effects)
+            {
+                ApplySmartFilterEffect(effect, layer);
+            }
+        }
+
+        /// <summary>
+        /// Applies a single smart filter effect to the layer's texture.
+        /// Simplified to demonstrate method structure.
+        /// </summary>
+        /// <param name="effect">The smart filter effect to apply.</param>
+        /// <param name="layer">The layer on which to apply the effect.</param>
+        private static void ApplySmartFilterEffect(SmartFilterEffect effect, Layer layer)
+        {
+            switch (effect.Type)
+            {
+                case SmartFilterType.GaussianBlur:
+                    ApplyGaussianBlur((GaussianBlurEffect)effect, layer);
+                    break;
+                case SmartFilterType.MotionBlur:
+                    ApplyMotionBlur((MotionBlurEffect)effect, layer);
+                    break;
+                case SmartFilterType.Sharpen:
+                    ApplySharpen((SharpenEffect)effect, layer);
+                    break;
+                case SmartFilterType.Noise:
+                    ApplyNoise((NoiseEffect)effect, layer);
+                    break;
+                case SmartFilterType.Emboss:
+                    ApplyEmboss((EmbossEffect)effect, layer);
+                    break;
+                // Add other cases for different types here
+            }
+        }
+
+        // Placeholder implementations for applying smart filters
+        private static void ApplyGaussianBlur(GaussianBlurEffect effect, Layer layer)
+        {
+            // Simplified logic for Gaussian blur - demonstrate process
+            Debug.Log($"Applying Gaussian Blur with radius {effect.Radius} to layer {layer.Name}");
+        }
+
+        private static void ApplyMotionBlur(MotionBlurEffect effect, Layer layer)
+        {
+            // Simplified logic for motion blur - demonstrate process
+            Debug.Log($"Applying Motion Blur with angle {effect.Angle} and distance {effect.Distance} to layer {layer.Name}");
+        }
+
+        private static void ApplySharpen(SharpenEffect effect, Layer layer)
+        {
+            // Simplified logic for sharpen - demonstrate process
+            Debug.Log($"Applying Sharpen with amount {effect.Amount} to layer {layer.Name}");
+        }
+
+        private static void ApplyNoise(NoiseEffect effect, Layer layer)
+        {
+            // Simplified logic for noise - demonstrate process
+            Debug.Log($"Applying Noise with amount {effect.Amount} to layer {layer.Name}");
+        }
+
+        private static void ApplyEmboss(EmbossEffect effect, Layer layer)
+        {
+            // Simplified logic for emboss - demonstrate process
+            Debug.Log($"Applying Emboss with angle {effect.Angle} to layer {layer.Name}");
+        }
+
+        #endregion
+        
+        #region Layer Mask Processing
+
+        /// csummary 03e
+        /// Processes adjustment layers for all layers in the PSD file.
+        /// This method pre-processes adjustments to apply effects.
+        ///  03c/summary 03e
+        ///  03cparam name="layers" 03eThe list of layers to process adjustments for. 03c/param 03e
+        private static void ApplyAdjustmentLayers(ListcLayere layers)
+        {
+            if (layers == null) return;
+
+            foreach (Layer layer in layers)
+            {
+                ProcessAdjustmentLayers(layer);
+
+                // Process child layers recursively
+                if (layer.Children != null  26 26 layer.Children.Count  3e 0)
+                {
+                    ApplyAdjustmentLayers(layer.Children);
+                }
+            }
+        }
+
+        ///  03csummary 03e
+        /// Applies adjustment layer effects to the given layer.
+        ///  03c/summary 03e
+        ///  03cparam name="layer" 03eThe layer to process adjustments for. 03c/param 03e
+        private static void ProcessAdjustmentLayers(Layer layer)
+        {
+            AdjustmentLayerEffects effects = AdjustmentLayerParser.ParseAdjustmentLayers(layer);
+
+            foreach (var effect in effects.Effects)
+            {
+                ApplyAdjustmentEffect(effect, layer);
+            }
+        }
+
+        ///  03csummary 03e
+        /// Applies a single adjustment layer effect to the layer's texture.
+        /// Simplified to demonstrate method structure.
+        ///  03c/summary 03e
+        ///  03cparam name="effect" 03eThe adjustment layer effect to apply. 03c/param 03e
+        ///  03cparam name="layer" 03eThe layer on which to apply the effect. 03c/param 03e
+        private static void ApplyAdjustmentEffect(AdjustmentLayerEffect effect, Layer layer)
+        {
+            switch (effect.Type)
+            {
+                case AdjustmentLayerType.BrightnessContrast:
+                    ApplyBrightnessContrast((BrightnessContrastEffect)effect, layer);
+                    break;
+                case AdjustmentLayerType.HueSaturation:
+                    ApplyHueSaturation((HueSaturationEffect)effect, layer);
+                    break;
+                case AdjustmentLayerType.ColorBalance:
+                    ApplyColorBalance((ColorBalanceEffect)effect, layer);
+                    break;
+                // Add other cases for different types here
+            }
+        }
+
+        // Placeholder implementations for applying adjustments
+        private static void ApplyBrightnessContrast(BrightnessContrastEffect effect, Layer layer)
+        {
+            // Simplified logic for brightness/contrast - demonstrate process
+        }
+
+        private static void ApplyHueSaturation(HueSaturationEffect effect, Layer layer)
+        {
+            // Simplified logic for hue/saturation - demonstrate process
+        }
+
+        private static void ApplyColorBalance(ColorBalanceEffect effect, Layer layer)
+        {
+            // Simplified logic for color balance - demonstrate process
+        }
+
+        #endregion
+        
+        /// <summary>
+        /// Processes layer masks for all layers in the PSD file.
+        /// This method pre-processes masks to ensure they are available for texture creation.
+        /// </summary>
+        /// <param name="layers">The list of layers to process masks for.</param>
+        private static void ApplyLayerMasks(List<Layer> layers)
+        {
+            if (layers == null) return;
+            
+            foreach (Layer layer in layers)
+            {
+                ProcessLayerMask(layer);
+                
+                // Process child layers recursively
+                if (layer.Children != null && layer.Children.Count > 0)
+                {
+                    ApplyLayerMasks(layer.Children);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Processes a single layer's mask data.
+        /// </summary>
+        /// <param name="layer">The layer to process the mask for.</param>
+        private static void ProcessLayerMask(Layer layer)
+        {
+            if (layer.MaskData == null || layer.MaskData.Rect.width <= 0 || layer.MaskData.Rect.height <= 0)
+            {
+                return; // No mask data or invalid mask
+            }
+            
+            // The mask data is already loaded in the ImageDecoder.DecodeImage method
+            // The mask is applied to the alpha channel of the texture during DecodeImage
+            // We can also create separate mask textures if needed
+            
+            if (ShouldCreateSeparateMaskTexture(layer))
+            {
+                CreateSeparateMaskTexture(layer);
+            }
+        }
+        
+        /// <summary>
+        /// Determines if a separate mask texture should be created for the layer.
+        /// </summary>
+        /// <param name="layer">The layer to check.</param>
+        /// <returns>True if a separate mask texture should be created.</returns>
+        private static bool ShouldCreateSeparateMaskTexture(Layer layer)
+        {
+            // Create separate mask textures for layers with complex masks
+            // or when specifically requested (e.g., layer name contains "|SeparateMask")
+            return layer.Name.ContainsIgnoreCase("|SeparateMask") ||
+                   layer.Name.ContainsIgnoreCase("|Mask");
+        }
+        
+        /// <summary>
+        /// Creates a separate texture file for the layer's mask.
+        /// </summary>
+        /// <param name="layer">The layer to create the mask texture for.</param>
+        /// <returns>The file path to the created mask texture.</returns>
+        private static string CreateSeparateMaskTexture(Layer layer)
+        {
+            if (layer.MaskData == null || layer.MaskData.ImageData == null)
+            {
+                return string.Empty;
+            }
+            
+            // Create a grayscale texture from the mask data
+            int width = (int)layer.MaskData.Rect.width;
+            int height = (int)layer.MaskData.Rect.height;
+            
+            Texture2D maskTexture = new Texture2D(width, height, TextureFormat.Alpha8, false);
+            byte[] maskData = layer.MaskData.ImageData;
+            
+            // Convert mask data to texture pixels
+            byte[] pixels = new byte[width * height];
+            for (int y = 0; y < height; y++)
+            {
+                int layerRow = y * width;
+                // Flip Y for Unity texture
+                int textureRow = (height - 1 - y) * width;
+                
+                for (int x = 0; x < width; x++)
+                {
+                    int layerIndex = layerRow + x;
+                    int textureIndex = textureRow + x;
+                    
+                    if (layerIndex < maskData.Length)
+                    {
+                        pixels[textureIndex] = maskData[layerIndex];
+                    }
+                    else
+                    {
+                        pixels[textureIndex] = 255; // Default to fully opaque
+                    }
+                }
+            }
+            
+            maskTexture.LoadRawTextureData(pixels);
+            maskTexture.Apply();
+            
+            // Save the mask texture as a PNG file
+            string maskFile = Path.Combine(currentPath, layer.Name + "_mask.png");
+            File.WriteAllBytes(maskFile, maskTexture.EncodeToPNG());
+            
+            // Import as texture (not sprite)
+            string relativePath = GetRelativePath(maskFile);
+            AssetDatabase.ImportAsset(relativePath, ImportAssetOptions.ForceUpdate);
+            
+            TextureImporter textureImporter = AssetImporter.GetAtPath(relativePath) as TextureImporter;
+            if (textureImporter != null)
+            {
+                textureImporter.textureType = TextureImporterType.Default;
+                textureImporter.mipmapEnabled = false;
+                textureImporter.alphaSource = TextureImporterAlphaSource.FromGrayScale;
+                textureImporter.maxTextureSize = 2048;
+            }
+            
+            AssetDatabase.ImportAsset(relativePath, ImportAssetOptions.ForceUpdate);
+            
+            return maskFile;
+        }
+        
+        /// <summary>
+        /// Creates a UI mask component for clipping UI elements.
+        /// </summary>
+        /// <param name="gameObject">The GameObject to add the mask to.</param>
+        /// <param name="layer">The layer containing mask data.</param>
+        private static void CreateUIMask(GameObject gameObject, Layer layer)
+        {
+            if (layer.MaskData == null) return;
+            
+            // Add a Mask component for UI clipping
+            UnityEngine.UI.Mask mask = gameObject.AddComponent<UnityEngine.UI.Mask>();
+            mask.showMaskGraphic = false;
+            
+            // Create a mask image if one doesn't exist
+            Image maskImage = gameObject.GetComponent<Image>();
+            if (maskImage == null)
+            {
+                maskImage = gameObject.AddComponent<Image>();
+            }
+            
+            // Use a simple white texture for the mask shape
+            // In a more advanced implementation, you could create a custom texture from the mask data
+            maskImage.color = Color.white;
+        }
+        
         #endregion
     }
 }
