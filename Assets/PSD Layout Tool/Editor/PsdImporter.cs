@@ -902,6 +902,36 @@ namespace PsdLayoutTool
                 case BlendMode.HardLight:
                     spriteRenderer.material = CreateBlendMaterial("Sprites/HardLight");
                     break;
+                case BlendMode.ColorDodge:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/ColorDodge");
+                    break;
+                case BlendMode.ColorBurn:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/ColorBurn");
+                    break;
+                case BlendMode.Darken:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/Darken");
+                    break;
+                case BlendMode.Lighten:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/Lighten");
+                    break;
+                case BlendMode.Difference:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/Difference");
+                    break;
+                case BlendMode.Exclusion:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/Exclusion");
+                    break;
+                case BlendMode.Hue:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/Hue");
+                    break;
+                case BlendMode.Saturation:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/Saturation");
+                    break;
+                case BlendMode.Color:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/Color");
+                    break;
+                case BlendMode.Luminosity:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/Luminosity");
+                    break;
                 case BlendMode.Normal:
                 default:
                     spriteRenderer.material = new Material(Shader.Find("Sprites/Default"));
@@ -918,8 +948,7 @@ namespace PsdLayoutTool
         {
             BlendMode blendMode = ConvertBlendModeKey(blendModeKey);
             
-            // For UI elements, blend modes are more limited due to the UI rendering pipeline
-            // We can simulate some effects by adjusting the Image component properties
+            // For UI elements, blend modes can use the same principles if shaders were designed, but we'll use basic simulation for illustration
             switch (blendMode)
             {
                 case BlendMode.Multiply:
@@ -943,6 +972,17 @@ namespace PsdLayoutTool
                         image.material = hardLightUI;
                     }
                     break;
+                // New blend modes - setting to null for now as complex UI shader implementations are not defined
+                case BlendMode.ColorDodge:
+                case BlendMode.ColorBurn:
+                case BlendMode.Darken:
+                case BlendMode.Lighten:
+                case BlendMode.Difference:
+                case BlendMode.Exclusion:
+                case BlendMode.Hue:
+                case BlendMode.Saturation:
+                case BlendMode.Color:
+                case BlendMode.Luminosity:
                 case BlendMode.Normal:
                 default:
                     image.material = null;
