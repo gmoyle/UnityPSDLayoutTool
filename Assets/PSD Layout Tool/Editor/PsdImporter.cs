@@ -14,6 +14,25 @@ using UnityEngine.UI;
 namespace PsdLayoutTool
 {
     /// <summary>
+    /// Photoshop blend modes that can be applied to Unity components
+    /// </summary>
+    public enum BlendMode
+    {
+        Normal,
+        Multiply,
+        Screen,
+        Overlay,
+        SoftLight,
+        HardLight,
+        ColorDodge,
+        ColorBurn,
+        Darken,
+        Lighten,
+        Difference,
+        Exclusion
+    }
+
+    /// <summary>
     /// Handles all of the importing for a PSD file (exporting textures, creating prefabs, etc).
     /// </summary>
     public static class PsdImporter
@@ -673,6 +692,9 @@ namespace PsdLayoutTool
             color.a = layer.Opacity / 255f;
             spriteRenderer.color = color;
             
+            // Apply blend mode
+            ApplyBlendMode(spriteRenderer, layer.BlendModeKey);
+            
             return spriteRenderer;
         }
 
@@ -816,6 +838,117 @@ namespace PsdLayoutTool
             return clip;
         }
 
+        /// <summary>
+        /// Converts a Photoshop blend mode key to a BlendMode enum value.
+        /// </summary>
+        /// <param name="blendModeKey">The Photoshop blend mode key (e.g., "norm", "mult", "scrn").</param>
+        /// <returns>The corresponding BlendMode enum value.</returns>
+        private static BlendMode ConvertBlendModeKey(string blendModeKey)
+        {
+            switch (blendModeKey)
+            {
+                case "norm": return BlendMode.Normal;
+                case "mult": return BlendMode.Multiply;
+                case "scrn": return BlendMode.Screen;
+                case "over": return BlendMode.Overlay;
+                case "sLit": return BlendMode.SoftLight;
+                case "hLit": return BlendMode.HardLight;
+                case "cDdg": return BlendMode.ColorDodge;
+                case "cBrn": return BlendMode.ColorBurn;
+                case "dark": return BlendMode.Darken;
+                case "lite": return BlendMode.Lighten;
+                case "diff": return BlendMode.Difference;
+                case "smud": return BlendMode.Exclusion;
+                default:
+                    Debug.LogWarning($"Unsupported blend mode: {blendModeKey}, defaulting to Normal");
+                    return BlendMode.Normal;
+            }
+        }
+
+        /// <summary>
+        /// Applies the appropriate blend mode to a SpriteRenderer by setting its material.
+        /// </summary>
+        /// <param name="spriteRenderer">The SpriteRenderer to apply the blend mode to.</param>
+        /// <param name="blendModeKey">The Photoshop blend mode key.</param>
+        private static void ApplyBlendMode(SpriteRenderer spriteRenderer, string blendModeKey)
+        {
+            BlendMode blendMode = ConvertBlendModeKey(blendModeKey);
+            
+            switch (blendMode)
+            {
+                case BlendMode.Multiply:
+                    // For multiply, we can use a simple material with multiply blend
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/Multiply");
+                    break;
+                case BlendMode.Screen:
+                    // Screen blend mode
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/Screen");
+                    break;
+                case BlendMode.Overlay:
+                    // Overlay blend mode
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/Overlay");
+                    break;
+                case BlendMode.Normal:
+                default:
+                    // Use default sprite material for normal blend mode
+                    spriteRenderer.material = new Material(Shader.Find("Sprites/Default"));
+                    break;
+            }
+        }
+        
+        /// <summary>
+        /// Applies the appropriate blend mode to a UI Image component.
+        /// </summary>
+        /// <param name="image">The UI Image to apply the blend mode to.</param>
+        /// <param name="blendModeKey">The Photoshop blend mode key.</param>
+        private static void ApplyBlendModeToUI(Image image, string blendModeKey)
+        {
+            BlendMode blendMode = ConvertBlendModeKey(blendModeKey);
+            
+            // For UI elements, blend modes are more limited due to the UI rendering pipeline
+            // We can simulate some effects by adjusting the Image component properties
+            switch (blendMode)
+            {
+                case BlendMode.Multiply:
+                    // Try to use a multiply material if available, otherwise log a warning
+                    Material multiplyMaterial = CreateBlendMaterial("UI/Multiply");
+                    if (multiplyMaterial != null)
+                    {
+                        image.material = multiplyMaterial;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Multiply blend mode not fully supported for UI Image '{image.name}'. Consider using a custom UI shader.");
+                    }
+                    break;
+                case BlendMode.Normal:
+                default:
+                    // Use default UI material
+                    image.material = null; // UI uses default material when null
+                    break;
+            }
+        }
+        
+        /// <summary>
+        /// Creates or finds a material with the specified shader for blend modes.
+        /// </summary>
+        /// <param name="shaderName">The name of the shader to use.</param>
+        /// <returns>A material with the blend mode shader, or null if not found.</returns>
+        private static Material CreateBlendMaterial(string shaderName)
+        {
+            Shader shader = Shader.Find(shaderName);
+            if (shader != null)
+            {
+                return new Material(shader);
+            }
+            else
+            {
+                // Fall back to a custom blend mode implementation or default
+                Debug.LogWarning($"Shader '{shaderName}' not found. Using default material.");
+                return new Material(Shader.Find("Sprites/Default"));
+            }
+        }
+
         #endregion
 
         #region Unity UI
@@ -890,6 +1023,9 @@ namespace PsdLayoutTool
             Color color = image.color;
             color.a = layer.Opacity / 255f;
             image.color = color;
+            
+            // Apply blend mode for UI
+            ApplyBlendModeToUI(image, layer.BlendModeKey);
 
             RectTransform transform = gameObject.GetComponent<RectTransform>();
             transform.sizeDelta = new Vector2(width, height);

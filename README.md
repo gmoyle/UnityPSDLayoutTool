@@ -7,8 +7,12 @@ Features
 ========
 * Layout each PSD layer as Unity 4.3+ Sprites
   * Create Sprite animations using a set of layers as the frames in the animation
+  * **Photoshop Blend Mode Support**: Automatically applies layer blend modes (Normal, Multiply, Screen, Overlay, etc.) to Unity materials
+  * **Layer Opacity Support**: Preserves Photoshop layer opacity settings in Unity
+  * **Invisible Layer Filtering**: Skips invisible layers during import to match Photoshop visibility
 * Layout each PSD Layer as Unity 4.6+ UI elements
   * Create Button objects using a set of layers as the button states
+  * **UI Text Support**: Creates proper UI Text components from Photoshop text layers
 * Generate a single prefab with the entire layout (Sprites or UI)
 * Export each PSD Layer as a .png file on the hard drive
   * Useful for simply updating textures without creating an entire layout

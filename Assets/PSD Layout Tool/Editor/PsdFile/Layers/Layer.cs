@@ -75,8 +75,8 @@ namespace PhotoshopFile
                 throw new IOException("Layer Channelheader error!");
             }
 
-            // read the blend mode key (unused) (defaults to "norm")
-            reader.ReadChars(4);
+            // read the blend mode key
+            BlendModeKey = new string(reader.ReadChars(4));
 
             // read the opacity
             Opacity = reader.ReadByte();
@@ -206,6 +206,11 @@ namespace PhotoshopFile
         /// Gets the opacity of this layer.  0 = transparent and 255 = opaque/solid.
         /// </summary>
         public byte Opacity { get; private set; }
+
+        /// <summary>
+        /// Gets the blend mode key for this layer (e.g., "norm", "mult", "scrn").
+        /// </summary>
+        public string BlendModeKey { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this layer is visible or not.
