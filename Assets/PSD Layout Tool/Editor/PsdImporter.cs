@@ -24,7 +24,16 @@ namespace PsdLayoutTool
         Overlay,
         SoftLight,
         HardLight,
-        // More blend modes can be added here
+        ColorDodge,
+        ColorBurn,
+        Darken,
+        Lighten,
+        Difference,
+        Exclusion,
+        Hue,
+        Saturation,
+        Color,
+        Luminosity
     }
 
     /// <summary>
@@ -854,6 +863,10 @@ namespace PsdLayoutTool
                 case "lite": return BlendMode.Lighten;
                 case "diff": return BlendMode.Difference;
                 case "smud": return BlendMode.Exclusion;
+                case "hue ": return BlendMode.Hue;
+                case "sat ": return BlendMode.Saturation;
+                case "colr": return BlendMode.Color;
+                case "lum ": return BlendMode.Luminosity;
                 default:
                     Debug.LogWarning($"Unsupported blend mode: {blendModeKey}, defaulting to Normal");
                     return BlendMode.Normal;
