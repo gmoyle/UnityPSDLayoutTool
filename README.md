@@ -232,8 +232,6 @@ Blend modes are automatically applied during import - no manual configuration re
 - **Warning Messages**: Check the Console for any blend mode application warnings
 - **Unexpected Results**: Ensure your PSD layers use standard Photoshop blend modes (custom blend modes are not supported)
 
-![](screenshots/photoshop.jpg?raw=true)
-![](screenshots/photoshop.jpg?raw=true)
 
 ## 🔧 Development & Contributing
 
