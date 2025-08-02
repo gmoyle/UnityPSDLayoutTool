@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2025-08-02
+
 ### Added
 - **TextMeshPro Integration**: Complete TextMeshPro support for all text rendering
   - Automatic system font detection and import from Windows, macOS, and Linux
