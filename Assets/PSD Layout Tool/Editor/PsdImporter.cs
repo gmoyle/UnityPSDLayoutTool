@@ -356,6 +356,13 @@ namespace PsdLayoutTool
         {
 
             layer.Name = MakeNameSafe(layer.Name);
+            
+            // Skip invisible layers
+            if (!layer.Visible)
+            {
+                return;
+            }
+            
             if (layer.Children.Count > 0 || layer.Rect.width == 0)
             {
                 ExportFolderLayer(layer);
@@ -660,6 +667,12 @@ namespace PsdLayoutTool
 
             SpriteRenderer spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
             spriteRenderer.sprite = CreateSprite(layer);
+            
+            // Apply layer opacity
+            Color color = spriteRenderer.color;
+            color.a = layer.Opacity / 255f;
+            spriteRenderer.color = color;
+            
             return spriteRenderer;
         }
 
@@ -872,6 +885,11 @@ namespace PsdLayoutTool
 
             Image image = gameObject.AddComponent<Image>();
             image.sprite = CreateSprite(layer);
+            
+            // Apply layer opacity
+            Color color = image.color;
+            color.a = layer.Opacity / 255f;
+            image.color = color;
 
             RectTransform transform = gameObject.GetComponent<RectTransform>();
             transform.sizeDelta = new Vector2(width, height);
@@ -1042,7 +1060,13 @@ namespace PsdLayoutTool
 
                 if (child.IsTextLayer)
                 {
-                    // TODO: Create a child text game object
+                    // Create a child text game object for UI text
+                    GameObject oldGroupObject = currentGroupGameObject;
+                    currentGroupGameObject = button.gameObject;
+                    
+                    CreateUIText(child);
+                    
+                    currentGroupGameObject = oldGroupObject;
                 }
             }
         }

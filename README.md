@@ -63,10 +63,4 @@ Layers can have special tags applied to them that flags them to have the layout 
 
 Photoshop Compatibility
 =======================
-Photoshop's "Smart Objects" are not supported, and therefore must be flattened/rasterized in Photoshop before attempting to import.
-
-1. Click **Layer** in the Photoshop menu
-2. Click **Rasterize**
-3. Click **All Layers**
-
-![](screenshots/photoshop.jpg?raw=true)
+Smart Objects are supported, and do not need to be flattened/rasterized in Photoshop before importing.
