@@ -214,8 +214,15 @@ namespace PsdLayoutTool
 
             if (CreatePrefab)
             {
-                UnityEngine.Object prefab = PrefabUtility.CreateEmptyPrefab(asset.Replace(".psd", ".prefab"));
+                string prefabPath = asset.Replace(".psd", ".prefab");
+#if UNITY_2018_1_OR_NEWER
+                // Use the new Prefab API for Unity 2018+
+                PrefabUtility.SaveAsPrefabAsset(rootPsdGameObject, prefabPath);
+#else
+                // Use the legacy Prefab API for older Unity versions
+                UnityEngine.Object prefab = PrefabUtility.CreateEmptyPrefab(prefabPath);
                 PrefabUtility.ReplacePrefab(rootPsdGameObject, prefab);
+#endif
 
                 if (!LayoutInScene)
                 {
@@ -835,13 +842,13 @@ namespace PsdLayoutTool
                 keyFrames[i] = kf;
             }
 
-#if UNITY_2018 || UNITY_2020 || UNITY_5
+#if UNITY_2018_1_OR_NEWER
             AnimationUtility.SetObjectReferenceCurve(clip, curveBinding, keyFrames);
+            // Note: hasMotionCurves is read-only, set via SerializedProperty if needed
 #else // Unity 4
             AnimationUtility.SetAnimationType(clip, ModelImporterAnimationType.Generic);
             AnimationUtility.SetObjectReferenceCurve(clip, curveBinding, keyFrames);
-
-            clip.ValidateIfRetargetable(true);
+            // Note: hasMotionCurves is read-only, set via SerializedProperty if needed
 #endif
 
             AssetDatabase.CreateAsset(clip, GetRelativePath(currentPath) + "/" + name + ".anim");
@@ -1482,21 +1489,44 @@ namespace PsdLayoutTool
         /// Processes a single layer's mask data.
         /// </summary>
         /// <param name="layer">The layer to process the mask for.</param>
-        private static void ProcessLayerMask(Layer layer)
+        private static GameObject CreateEmptyObject(Layer layer)
         {
-            if (layer.MaskData == null || layer.MaskData.Rect.width <= 0 || layer.MaskData.Rect.height <= 0)
+            if (layer == null)
             {
-                return; // No mask data or invalid mask
+                Debug.LogError("Cannot create empty object: layer is null");
+                return null;
             }
-            
-            // The mask data is already loaded in the ImageDecoder.DecodeImage method
-            // The mask is applied to the alpha channel of the texture during DecodeImage
-            // We can also create separate mask textures if needed
-            
-            if (ShouldCreateSeparateMaskTexture(layer))
+
+            if (layer.PsdFile == null)
             {
-                CreateSeparateMaskTexture(layer);
+                Debug.LogError($"Cannot create empty object for layer '{layer.Name}': PsdFile reference is null");
+                return null;
             }
+
+            // Avoid division by zero
+            if (PixelsToUnits == 0)
+            {
+                Debug.LogError("PixelsToUnits cannot be zero. Using default value of 100.");
+                PixelsToUnits = 100f;
+            }
+
+            float x = 0 / PixelsToUnits;
+            float y = 0 / PixelsToUnits;
+            y = (CanvasSize.y / PixelsToUnits) - y;
+            float width = layer.PsdFile.Width / PixelsToUnits;
+            float height = layer.PsdFile.Height / PixelsToUnits;
+
+            GameObject gameObject = new GameObject(layer.Name ?? "EmptyObject");
+            gameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
+            
+            if (currentGroupGameObject != null)
+            {
+                gameObject.transform.parent = currentGroupGameObject.transform;
+            }
+
+            currentDepth -= depthStep;
+
+            return gameObject;
         }
         
         /// <summary>
