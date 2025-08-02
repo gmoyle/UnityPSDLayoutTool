@@ -47,4 +47,6 @@ Shader "Sprites/Multiply"
         ENDCG
         }
     }
+    
+    Fallback "Sprites/Default"
 }

@@ -47,4 +47,6 @@ Shader "Sprites/Screen"
         ENDCG
         }
     }
+    
+    Fallback "Sprites/Default"
 }

@@ -121,4 +121,6 @@ Shader "UI/Multiply"
         ENDCG
         }
     }
+    
+    Fallback "UI/Default"
 }

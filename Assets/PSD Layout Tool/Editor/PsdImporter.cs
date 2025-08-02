@@ -1051,7 +1051,7 @@ namespace PsdLayoutTool
         /// Creates or finds a material with the specified shader for blend modes.
         /// </summary>
         /// <param name="shaderName">The name of the shader to use.</param>
-        /// <returns>A material with the blend mode shader, or null if not found.</returns>
+        /// <returns>A material with the blend mode shader, or fallback material if not found.</returns>
         private static Material CreateBlendMaterial(string shaderName)
         {
             Shader shader = Shader.Find(shaderName);
@@ -1061,9 +1061,34 @@ namespace PsdLayoutTool
             }
             else
             {
-                // Fall back to a custom blend mode implementation or default
-                Debug.LogWarning($"Shader '{shaderName}' not found. Using default material.");
-                return new Material(Shader.Find("Sprites/Default"));
+                // Fall back to appropriate default shader based on shader type
+                string fallbackShader;
+                if (shaderName.StartsWith("UI/"))
+                {
+                    fallbackShader = "UI/Default";
+                }
+                else if (shaderName.StartsWith("Sprites/"))
+                {
+                    fallbackShader = "Sprites/Default";
+                }
+                else
+                {
+                    fallbackShader = "Sprites/Default";
+                }
+                
+                Debug.LogWarning($"Shader '{shaderName}' not found. Using fallback shader '{fallbackShader}'.");
+                
+                Shader fallback = Shader.Find(fallbackShader);
+                if (fallback != null)
+                {
+                    return new Material(fallback);
+                }
+                else
+                {
+                    // Last resort: try built-in shader
+                    Debug.LogWarning($"Fallback shader '{fallbackShader}' also not found. Using built-in default.");
+                    return new Material(Shader.Find("Standard") ?? Shader.Find("Legacy Shaders/Diffuse"));
+                }
             }
         }
 

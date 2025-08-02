@@ -121,4 +121,6 @@ Shader "UI/Screen"
         ENDCG
         }
     }
+    
+    Fallback "UI/Default"
 }
