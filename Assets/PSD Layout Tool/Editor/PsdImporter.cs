@@ -36,7 +36,6 @@ namespace PsdLayoutTool
         Color,
         Luminosity
     }
-
     /// <summary>
     /// Handles all of the importing for a PSD file (exporting textures, creating prefabs, etc).
     /// </summary>
@@ -181,8 +180,7 @@ namespace PsdLayoutTool
             string assetPathWithoutFilename = asset.Remove(lastSlash + 1, asset.Length - (lastSlash + 1));
             PsdName = asset.Replace(assetPathWithoutFilename, string.Empty).Replace(".psd", string.Empty);
 
-            currentPath = GetFullProjectPath() + "Assets";
-            currentPath = Path.Combine(currentPath, PsdName);
+            currentPath = GetFullProjectPath() + assetPathWithoutFilename + PsdName;
             Directory.CreateDirectory(currentPath);
 
             if (LayoutInScene || CreatePrefab)
@@ -195,7 +193,14 @@ namespace PsdLayoutTool
                 }
                 else
                 {
+                    float x = 0 / PixelsToUnits;
+                    float y = 0 / PixelsToUnits;
+                    y = (CanvasSize.y / PixelsToUnits) - y;
+                    float width = psd.Width / PixelsToUnits;
+                    float height = psd.Height / PixelsToUnits;
+
                     rootPsdGameObject = new GameObject(PsdName);
+<<<<<<< HEAD
 
                     float x = 0 / PixelsToUnits;
                     float y = 0 / PixelsToUnits;
@@ -203,6 +208,8 @@ namespace PsdLayoutTool
                     float width = psd.Width / PixelsToUnits;
                     float height = psd.Height / PixelsToUnits;
 
+=======
+>>>>>>> 82ff974d9d9cd0c494ac35c7f386e2d4903f9461
                     rootPsdGameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
                 }
 
@@ -463,7 +470,7 @@ namespace PsdLayoutTool
 
                 if (LayoutInScene || CreatePrefab)
                 {
-                    currentGroupGameObject = new GameObject(layer.Name);
+                    currentGroupGameObject = CreateEmptyObject(layer);
                     currentGroupGameObject.transform.parent = oldGroupObject.transform;
                 }
 
@@ -726,15 +733,47 @@ namespace PsdLayoutTool
         /// <param name="layer">The <see cref="Layer"/> to create the sprite from.</param>
         private static GameObject CreateEmptyObject(Layer layer)
         {
+<<<<<<< HEAD
+=======
+            if (layer == null)
+            {
+                Debug.LogError("Cannot create empty object: layer is null");
+                return null;
+            }
+
+            if (layer.PsdFile == null)
+            {
+                Debug.LogError($"Cannot create empty object for layer '{layer.Name}': PsdFile reference is null");
+                return null;
+            }
+
+            // Avoid division by zero
+            if (PixelsToUnits == 0)
+            {
+                Debug.LogError("PixelsToUnits cannot be zero. Using default value of 100.");
+                PixelsToUnits = 100f;
+            }
+
+>>>>>>> 82ff974d9d9cd0c494ac35c7f386e2d4903f9461
             float x = 0 / PixelsToUnits;
             float y = 0 / PixelsToUnits;
             y = (CanvasSize.y / PixelsToUnits) - y;
             float width = layer.PsdFile.Width / PixelsToUnits;
             float height = layer.PsdFile.Height / PixelsToUnits;
 
+<<<<<<< HEAD
             GameObject gameObject = new GameObject(layer.Name);
             gameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
             gameObject.transform.parent = currentGroupGameObject.transform;
+=======
+            GameObject gameObject = new GameObject(layer.Name ?? "EmptyObject");
+            gameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
+            
+            if (currentGroupGameObject != null)
+            {
+                gameObject.transform.parent = currentGroupGameObject.transform;
+            }
+>>>>>>> 82ff974d9d9cd0c494ac35c7f386e2d4903f9461
 
             currentDepth -= depthStep;
 
@@ -768,6 +807,12 @@ namespace PsdLayoutTool
 
             List<Sprite> frames = new List<Sprite>();
 
+            if (layer.Children == null || layer.Children.Count == 0)
+            {
+                Debug.LogError($"Cannot create animation for layer '{layer.Name}': no child layers found.");
+                return;
+            }
+
             Layer firstChild = layer.Children.First();
             SpriteRenderer spriteRenderer = CreateSpriteGameObject(firstChild);
             spriteRenderer.name = layer.Name;
@@ -779,7 +824,11 @@ namespace PsdLayoutTool
 
             spriteRenderer.sprite = frames[0];
 
+<<<<<<< HEAD
 #if UNITY_2018 || UNITY_2020 || UNITY_5
+=======
+#if UNITY_2018_1_OR_NEWER || UNITY_5
+>>>>>>> 82ff974d9d9cd0c494ac35c7f386e2d4903f9461
             // Create Animator Controller with an Animation Clip
             UnityEditor.Animations.AnimatorController controller = new UnityEditor.Animations.AnimatorController();
             controller.AddLayer("Base Layer");
@@ -791,10 +840,10 @@ namespace PsdLayoutTool
             AssetDatabase.CreateAsset(controller, GetRelativePath(currentPath) + "/" + layer.Name + ".controller");
 #else // Unity 4
             // Create Animator Controller with an Animation Clip
-            AnimatorController controller = new AnimatorController();
-            AnimatorControllerLayer controllerLayer = controller.AddLayer("Base Layer");
+            UnityEditor.Animations.AnimatorController controller = new UnityEditor.Animations.AnimatorController();
+            UnityEditor.Animations.AnimatorControllerLayer controllerLayer = controller.AddLayer("Base Layer");
 
-            State state = controllerLayer.stateMachine.AddState(layer.Name);
+            UnityEditor.Animations.AnimatorState state = controllerLayer.stateMachine.AddState(layer.Name);
             state.SetAnimationClip(CreateSpriteAnimationClip(layer.Name, frames, fps));
 
             AssetDatabase.CreateAsset(controller, GetRelativePath(currentPath) + "/" + layer.Name + ".controller");

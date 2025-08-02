@@ -1,19 +1,29 @@
 {
   "name": "com.igt.psdsimplelayout",
   "displayName": "PSD Simple Layout",
-  "version": "1.0.2",
-  "unity": "2020.4",
-  "description": "A very lightweight photoshop Unity import tool that allows for rapid breakout/prototyping/scene building with limited overhead.",
+  "version": "1.0.3",
+  "unity": "2018.1",
+  "unityRelease": "0f2",
+  "description": "A lightweight Photoshop Unity import tool that allows for rapid breakout/prototyping/scene building with minimal overhead. Supports Unity 4, 5, 2018+. Converts PSD layers to GameObjects with proper positioning and pivot handling.",
   "keywords": [
     "PSD",
     "PSD Layout",
-    "Text"
+    "Photoshop",
+    "Import",
+    "Sprites",
+    "Layout",
+    "Animation",
+    "Editor"
   ],
-  "category": "Image Import",
-  "repository": {
-    "type": "",
-    "url": "",
-    "revision": ""
+  "category": "2D",
+  "author": {
+    "name": "Greg Moyle",
+    "email": "greg.moyle@igt.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gmoyle/UnityPSDLayoutTool.git"
+  },
+  "license": "MIT",
   "type": "tool"
 }
