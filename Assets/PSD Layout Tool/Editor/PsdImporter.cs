@@ -24,12 +24,7 @@ namespace PsdLayoutTool
         Overlay,
         SoftLight,
         HardLight,
-        ColorDodge,
-        ColorBurn,
-        Darken,
-        Lighten,
-        Difference,
-        Exclusion
+        // More blend modes can be added here
     }
 
     /// <summary>
@@ -888,9 +883,14 @@ namespace PsdLayoutTool
                     // Overlay blend mode
                     spriteRenderer.material = CreateBlendMaterial("Sprites/Overlay");
                     break;
+                case BlendMode.SoftLight:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/SoftLight");
+                    break;
+                case BlendMode.HardLight:
+                    spriteRenderer.material = CreateBlendMaterial("Sprites/HardLight");
+                    break;
                 case BlendMode.Normal:
                 default:
-                    // Use default sprite material for normal blend mode
                     spriteRenderer.material = new Material(Shader.Find("Sprites/Default"));
                     break;
             }
@@ -910,21 +910,29 @@ namespace PsdLayoutTool
             switch (blendMode)
             {
                 case BlendMode.Multiply:
-                    // Try to use a multiply material if available, otherwise log a warning
-                    Material multiplyMaterial = CreateBlendMaterial("UI/Multiply");
-                    if (multiplyMaterial != null)
-                    {
-                        image.material = multiplyMaterial;
+                    image.material = CreateBlendMaterial("UI/Multiply");
+                    break;
+                case BlendMode.Screen:
+                    image.material = CreateBlendMaterial("UI/Screen");
+                    break;
+                case BlendMode.Overlay:
+                    image.material = CreateBlendMaterial("UI/Overlay");
+                    break;
+                case BlendMode.SoftLight:
+                    Material softLightUI = CreateBlendMaterial("UI/SoftLight");
+                    if (softLightUI != null) {
+                        image.material = softLightUI;
                     }
-                    else
-                    {
-                        Debug.LogWarning($"Multiply blend mode not fully supported for UI Image '{image.name}'. Consider using a custom UI shader.");
+                    break;
+                case BlendMode.HardLight:
+                    Material hardLightUI = CreateBlendMaterial("UI/HardLight");
+                    if (hardLightUI != null) {
+                        image.material = hardLightUI;
                     }
                     break;
                 case BlendMode.Normal:
                 default:
-                    // Use default UI material
-                    image.material = null; // UI uses default material when null
+                    image.material = null;
                     break;
             }
         }
