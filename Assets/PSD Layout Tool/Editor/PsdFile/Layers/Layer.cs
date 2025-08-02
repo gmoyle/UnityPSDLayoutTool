@@ -188,6 +188,11 @@ namespace PhotoshopFile
         public bool HasEffects { get; set; }
 
         /// <summary>
+        /// Gets or sets the layer effects/styles applied to this layer.
+        /// </summary>
+        public PsdLayoutTool.LayerEffects LayerEffects { get; set; }
+
+        /// <summary>
         /// Gets the rectangle containing the contents of the layer.
         /// </summary>
         public Rect Rect { get; private set; }
@@ -257,7 +262,7 @@ namespace PhotoshopFile
         /// <summary>
         /// Gets or sets the list of adjustment information for this layer.
         /// </summary>
-        private List<AdjustmentLayerInfo> AdjustmentInfo { get; set; }
+        public List<AdjustmentLayerInfo> AdjustmentInfo { get; set; }
 
         #endregion
 

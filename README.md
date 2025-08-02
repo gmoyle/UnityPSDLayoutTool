@@ -7,7 +7,7 @@ Features
 ========
 * Layout each PSD layer as Unity 4.3+ Sprites
   * Create Sprite animations using a set of layers as the frames in the animation
-  * **Photoshop Blend Mode Support**: Automatically applies layer blend modes (Normal, Multiply, Screen, Overlay, etc.) to Unity materials
+  * **Full Photoshop Blend Mode Support**: Automatically applies all 16 Photoshop blend modes to Unity materials with mathematically accurate shaders
   * **Layer Opacity Support**: Preserves Photoshop layer opacity settings in Unity
   * **Invisible Layer Filtering**: Skips invisible layers during import to match Photoshop visibility
 * Layout each PSD Layer as Unity 4.6+ UI elements
@@ -68,3 +68,81 @@ Layers can have special tags applied to them that flags them to have the layout 
 Photoshop Compatibility
 =======================
 Smart Objects are supported, and do not need to be flattened/rasterized in Photoshop before importing.
+
+Blend Mode Support
+==================
+The Unity PSD Layout Tool provides **complete Photoshop blend mode compatibility** with mathematically accurate shader implementations. All 16 standard Photoshop blend modes are supported and automatically applied during import.
+
+## Supported Blend Modes
+
+### Basic Blend Modes
+| Blend Mode | Photoshop Key | Description | Implementation |
+|------------|---------------|-------------|----------------|
+| **Normal** | `norm` | Standard alpha blending | Unity default material |
+| **Multiply** | `mult` | Darkens by multiplying colors | Custom multiply shader |
+| **Screen** | `scrn` | Lightens by inverting, multiplying, and inverting again | Custom screen shader |
+| **Overlay** | `over` | Combines multiply and screen based on base color | Custom overlay shader |
+
+### Light Blend Modes
+| Blend Mode | Photoshop Key | Description | Implementation |
+|------------|---------------|-------------|----------------|
+| **Soft Light** | `sLit` | Softer version of overlay | Custom soft light shader |
+| **Hard Light** | `hLit` | Combines multiply and screen based on blend color | Custom hard light shader |
+| **Color Dodge** | `cDdg` | Brightens base color by decreasing contrast | Custom color dodge shader |
+| **Color Burn** | `cBrn` | Darkens base color by increasing contrast | Custom color burn shader |
+
+### Comparative Blend Modes
+| Blend Mode | Photoshop Key | Description | Implementation |
+|------------|---------------|-------------|----------------|
+| **Darken** | `dark` | Selects the darker of base and blend colors | Custom darken shader |
+| **Lighten** | `lite` | Selects the lighter of base and blend colors | Custom lighten shader |
+| **Difference** | `diff` | Subtracts darker color from lighter color | Custom difference shader |
+| **Exclusion** | `smud` | Similar to difference but with lower contrast | Custom exclusion shader |
+
+### HSV-Based Blend Modes
+| Blend Mode | Photoshop Key | Description | Implementation |
+|------------|---------------|-------------|----------------|
+| **Hue** | `hue ` | Uses hue from blend, saturation/value from base | HSV color space conversion shader |
+| **Saturation** | `sat ` | Uses saturation from blend, hue/value from base | HSV color space conversion shader |
+| **Color** | `colr` | Uses hue/saturation from blend, value from base | HSV color space conversion shader |
+| **Luminosity** | `lum ` | Uses value from blend, hue/saturation from base | HSV color space conversion shader |
+
+## Technical Implementation
+
+### Sprite Renderers
+For sprite-based layouts, blend modes are applied by:
+1. **Automatic Detection**: The tool reads the blend mode key from each PSD layer
+2. **Material Creation**: Custom materials are created using the appropriate blend mode shader
+3. **Shader Assignment**: The material is automatically assigned to the sprite renderer
+
+### UI Elements
+For Unity UI layouts, blend modes are handled with:
+- **Limited Support**: Basic blend modes (Multiply, Screen, Overlay, Soft Light, Hard Light) work with UI materials
+- **Fallback Behavior**: Advanced blend modes fall back to normal rendering for UI elements due to UI rendering pipeline limitations
+
+### Shader Quality
+- **Mathematical Accuracy**: All shaders implement the exact mathematical formulas used by Photoshop
+- **Color Space Conversion**: HSV-based blend modes include proper RGB↔HSV conversion functions
+- **Performance Optimized**: Shaders are optimized for real-time rendering while maintaining accuracy
+- **Unity Compatible**: All shaders follow Unity's sprite shader conventions and support standard features
+
+## Usage Notes
+
+### Automatic Application
+Blend modes are automatically applied during import - no manual configuration required:
+```
+1. Import your PSD file into Unity
+2. Select the PSD file in the Project window
+3. Use "Layout in Current Scene" or "Generate Prefab" 
+4. Blend modes are automatically detected and applied
+```
+
+### Performance Considerations
+- **Shader Compilation**: First use of each blend mode may cause a brief shader compilation
+- **Draw Calls**: Each unique blend mode creates a separate draw call
+- **Mobile Performance**: Complex blend modes (HSV-based) may impact performance on low-end mobile devices
+
+### Troubleshooting
+- **Missing Shaders**: If blend mode shaders are missing, the tool falls back to Unity's default sprite material
+- **Warning Messages**: Check the Console for any blend mode application warnings
+- **Unexpected Results**: Ensure your PSD layers use standard Photoshop blend modes (custom blend modes are not supported)

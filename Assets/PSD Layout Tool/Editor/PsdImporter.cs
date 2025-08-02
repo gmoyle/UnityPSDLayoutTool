@@ -699,6 +699,9 @@ namespace PsdLayoutTool
             // Apply blend mode
             ApplyBlendMode(spriteRenderer, layer.BlendModeKey);
             
+            // Apply layer effects
+            LayerEffectsApplicator.ApplyEffectsToSprite(spriteRenderer, layer, PixelsToUnits);
+            
             return spriteRenderer;
         }
 
@@ -1087,6 +1090,9 @@ namespace PsdLayoutTool
             
             // Apply blend mode for UI
             ApplyBlendModeToUI(image, layer.BlendModeKey);
+            
+            // Apply layer effects to UI
+            LayerEffectsApplicator.ApplyEffectsToUI(image, layer, PixelsToUnits);
 
             RectTransform transform = gameObject.GetComponent<RectTransform>();
             transform.sizeDelta = new Vector2(width, height);
