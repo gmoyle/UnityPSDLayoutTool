@@ -727,8 +727,6 @@ namespace PsdLayoutTool
         /// <param name="layer">The <see cref="Layer"/> to create the sprite from.</param>
         private static GameObject CreateEmptyObject(Layer layer)
         {
-<<<<<<< HEAD
-=======
             if (layer == null)
             {
                 Debug.LogError("Cannot create empty object: layer is null");
@@ -748,18 +746,12 @@ namespace PsdLayoutTool
                 PixelsToUnits = 100f;
             }
 
->>>>>>> 82ff974d9d9cd0c494ac35c7f386e2d4903f9461
             float x = 0 / PixelsToUnits;
             float y = 0 / PixelsToUnits;
             y = (CanvasSize.y / PixelsToUnits) - y;
             float width = layer.PsdFile.Width / PixelsToUnits;
             float height = layer.PsdFile.Height / PixelsToUnits;
 
-<<<<<<< HEAD
-            GameObject gameObject = new GameObject(layer.Name);
-            gameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
-            gameObject.transform.parent = currentGroupGameObject.transform;
-=======
             GameObject gameObject = new GameObject(layer.Name ?? "EmptyObject");
             gameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
             
@@ -767,7 +759,6 @@ namespace PsdLayoutTool
             {
                 gameObject.transform.parent = currentGroupGameObject.transform;
             }
->>>>>>> 82ff974d9d9cd0c494ac35c7f386e2d4903f9461
 
             currentDepth -= depthStep;
 
@@ -818,11 +809,7 @@ namespace PsdLayoutTool
 
             spriteRenderer.sprite = frames[0];
 
-<<<<<<< HEAD
-#if UNITY_2018 || UNITY_2020 || UNITY_5
-=======
 #if UNITY_2018_1_OR_NEWER || UNITY_5
->>>>>>> 82ff974d9d9cd0c494ac35c7f386e2d4903f9461
             // Create Animator Controller with an Animation Clip
             UnityEditor.Animations.AnimatorController controller = new UnityEditor.Animations.AnimatorController();
             controller.AddLayer("Base Layer");
