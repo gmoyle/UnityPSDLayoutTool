@@ -31,18 +31,44 @@ A lightweight Photoshop Unity import tool for rapid prototyping and scene buildi
 
 ## 📦 Installation
 
-### Option 1: Unity Package Manager (Recommended)
-1. Open Unity Package Manager
-2. Click "+" → "Add package from git URL"
-3. Enter: `https://github.com/gmoyle/UnityPSDLayoutTool.git`
+### 🎯 Choose Your Unity Version
 
-### Option 2: Download Release
+We provide **two optimized releases** for the best compatibility:
+
+#### **For Unity 6.1+ and Unity 2022.3+ LTS** (Recommended)
+```
+Package Manager → Add package from git URL:
+https://github.com/gmoyle/UnityPSDLayoutTool.git#unity-6.1-plus
+```
+- ✅ **Modern Unity features** and performance optimizations
+- ✅ **Latest TextMeshPro** (v3.2.0-pre.1) with enhanced capabilities
+- ✅ **Cleaner shaders** without legacy compatibility code
+- ✅ **Native Package Manager** support with automatic dependency resolution
+
+#### **For Unity 2018.1 through 2020.3 LTS**
+```
+Package Manager → Add package from git URL:
+https://github.com/gmoyle/UnityPSDLayoutTool.git#unity-2018-2020-lts
+```
+- ✅ **Legacy Unity compatibility** with shader version guards
+- ✅ **TextMeshPro v2.1.6** (Unity 2018-2020 compatible)
+- ✅ **Shader fallbacks** for older graphics APIs
+- ✅ **Extensive compatibility testing** on legacy Unity versions
+
+### Alternative Installation Methods
+
+#### Option 2: Download Release
 1. Go to [Releases](https://github.com/gmoyle/UnityPSDLayoutTool/releases)
-2. Download the latest `.unitypackage` file
-3. Import into your Unity project
+2. Choose the appropriate release for your Unity version:
+   - `v2.0.0-unity6.1-plus` for Unity 6.1+ and 2022.3+
+   - `v2.0.0-unity2018-2020` for Unity 2018-2020 LTS
+3. Download and import the `.unitypackage` file
 
-### Option 3: Manual Installation
-Simply copy the `Assets/PSD Layout Tool` folder into your project's Assets directory.
+#### Option 3: Manual Installation
+1. Clone or download the appropriate branch:
+   - `unity-6.1-plus` for modern Unity versions
+   - `unity-2018-2020-lts` for legacy Unity versions
+2. Copy the `Assets/PSD Layout Tool` folder into your project's Assets directory
 
 How to Use
 ==========
