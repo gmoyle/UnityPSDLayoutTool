@@ -5,9 +5,9 @@
   "unity": "2018.1",
   "unityRelease": "0f2",
   "dependencies": {
-    "com.unity.textmeshpro": "3.0.6"
+    "com.unity.textmeshpro": "2.1.6"
   },
-  "description": "A lightweight Photoshop Unity import tool with TextMeshPro integration for rapid prototyping and scene building. Features automatic font import, blend modes, layer effects, and comprehensive Unity UI support. Works with Unity 2018.1+.",
+  "description": "A lightweight Photoshop Unity import tool with TextMeshPro integration for rapid prototyping and scene building. Optimized for Unity 2018-2020 with automatic font import, blend modes, layer effects, and comprehensive Unity UI support.",
   "keywords": [
     "PSD",
     "PSD Layout",
