@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -1436,9 +1436,9 @@ namespace PsdLayoutTool
         /// csummary 03e
         /// Processes adjustment layers for all layers in the PSD file.
         /// This method pre-processes adjustments to apply effects.
-        ///  03c/summary 03e
-        ///  03cparam name="layers" 03eThe list of layers to process adjustments for. 03c/param 03e
-        private static void ApplyAdjustmentLayers(ListcLayere layers)
+        /// </summary>
+        /// <param name="layers">The list of layers to process adjustments for.</param>
+        private static void ApplyAdjustmentLayers(List<Layer> layers)
         {
             if (layers == null) return;
 
@@ -1447,17 +1447,17 @@ namespace PsdLayoutTool
                 ProcessAdjustmentLayers(layer);
 
                 // Process child layers recursively
-                if (layer.Children != null  26 26 layer.Children.Count  3e 0)
+                if (layer.Children != null && layer.Children.Count > 0)
                 {
                     ApplyAdjustmentLayers(layer.Children);
                 }
             }
         }
 
-        ///  03csummary 03e
+        /// <summary>
         /// Applies adjustment layer effects to the given layer.
-        ///  03c/summary 03e
-        ///  03cparam name="layer" 03eThe layer to process adjustments for. 03c/param 03e
+        /// </summary>
+        /// <param name="layer">The layer to process adjustments for.</param>
         private static void ProcessAdjustmentLayers(Layer layer)
         {
             AdjustmentLayerEffects effects = AdjustmentLayerParser.ParseAdjustmentLayers(layer);
@@ -1468,12 +1468,12 @@ namespace PsdLayoutTool
             }
         }
 
-        ///  03csummary 03e
+        /// <summary>
         /// Applies a single adjustment layer effect to the layer's texture.
         /// Simplified to demonstrate method structure.
-        ///  03c/summary 03e
-        ///  03cparam name="effect" 03eThe adjustment layer effect to apply. 03c/param 03e
-        ///  03cparam name="layer" 03eThe layer on which to apply the effect. 03c/param 03e
+        /// </summary>
+        /// <param name="effect">The adjustment layer effect to apply.</param>
+        /// <param name="layer">The layer on which to apply the effect.</param>
         private static void ApplyAdjustmentEffect(AdjustmentLayerEffect effect, Layer layer)
         {
             switch (effect.Type)
@@ -1534,44 +1534,15 @@ namespace PsdLayoutTool
         /// Processes a single layer's mask data.
         /// </summary>
         /// <param name="layer">The layer to process the mask for.</param>
-        private static GameObject CreateEmptyObject(Layer layer)
+        private static void ProcessLayerMask(Layer layer)
         {
-            if (layer == null)
-            {
-                Debug.LogError("Cannot create empty object: layer is null");
-                return null;
-            }
-
-            if (layer.PsdFile == null)
-            {
-                Debug.LogError($"Cannot create empty object for layer '{layer.Name}': PsdFile reference is null");
-                return null;
-            }
-
-            // Avoid division by zero
-            if (PixelsToUnits == 0)
-            {
-                Debug.LogError("PixelsToUnits cannot be zero. Using default value of 100.");
-                PixelsToUnits = 100f;
-            }
-
-            float x = 0 / PixelsToUnits;
-            float y = 0 / PixelsToUnits;
-            y = (CanvasSize.y / PixelsToUnits) - y;
-            float width = layer.PsdFile.Width / PixelsToUnits;
-            float height = layer.PsdFile.Height / PixelsToUnits;
-
-            GameObject gameObject = new GameObject(layer.Name ?? "EmptyObject");
-            gameObject.transform.position = new Vector3(x + (width / 2), y - (height / 2), currentDepth);
+            if (layer == null || layer.MaskData == null) return;
             
-            if (currentGroupGameObject != null)
+            // Process mask data here
+            if (ShouldCreateSeparateMaskTexture(layer))
             {
-                gameObject.transform.parent = currentGroupGameObject.transform;
+                CreateSeparateMaskTexture(layer);
             }
-
-            currentDepth -= depthStep;
-
-            return gameObject;
         }
         
         /// <summary>
@@ -1679,7 +1650,5 @@ namespace PsdLayoutTool
             // In a more advanced implementation, you could create a custom texture from the mask data
             maskImage.color = Color.white;
         }
-        
-        #endregion
     }
 }

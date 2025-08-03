@@ -248,8 +248,19 @@ namespace PsdLayoutTool
                     return existingTmpFont;
                 }
 
-                // Create the TextMeshPro font asset
-                TMP_FontAsset tmpFont = TMP_FontAsset.CreateFontAsset(unityFont, (int)fontSize, 9, GlyphRenderMode.SDFAA, 1024, 1024);
+                // Create the TextMeshPro font asset using TMPro 3.0.6 API
+                TMP_FontAsset tmpFont = null;
+                try
+                {
+                    // Use the newer API for TMP 3.0.6
+                    tmpFont = TMP_FontAsset.CreateFontAsset(unityFont);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"FontManager: Failed to create font asset using standard API for '{fontName}': {ex.Message}");
+                    // If creation fails, return null - we'll use the default font
+                    return null;
+                }
                 if (tmpFont != null)
                 {
                     tmpFont.name = $"TMP_{fontName}";
